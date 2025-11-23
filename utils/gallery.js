@@ -1,5 +1,6 @@
 
 const fs = require('fs');
+const CategoryModel = require('../models/category');
 
 let saveFile = (req, res, next) => {
     let fileName = new Date().valueOf() + "_" + req.files.file.name;
@@ -23,8 +24,18 @@ let saveFiles = (req, res, next) => {
     next()
 }
 
-let deleteFile =  async (fileName) => {
-    await fs.unlinkSync(`./uploads/${fileName}`)
+let deleteFile =  async (req, res , next) => {
+    const category = await CategoryModel.findById(req.params.id);
+    if (!category) {
+        return res.status(404).json({ conn: false, msg: "Category not found" });
+    }
+
+    if (category.image) {
+        await fs.unlinkSync(`./uploads/${category.image}`);
+        console.log(`File ${category.image} deleted successfully`);
+    }
+    next()
+
 }
 
 module.exports = {

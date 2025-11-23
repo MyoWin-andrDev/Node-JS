@@ -13,35 +13,9 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(fileUpload());
 
-//Schema
-const { Schema } = mongoose;
-const CategorySchema = new Schema({
-    name: {type: String, unique: true, required: true},
-    image: {type: String, required: true},
-    createdAt : {type : Date, default :  Date.now()}
-})
+const CategoryRoute = require("./routes/category");
 
-const Category = mongoose.model("category", CategorySchema);
-
-app.post("/category", saveFile , async (req, res,next) => {
-    let saveCategory = new Category(req.body);
-    let result = await saveCategory.save();
-    res.status(200).json({
-        con : true,
-        msg : "Category Created",
-        result : result
-    });
-})
-
-app.get("/category", async (req, res) => {
-    let category = await Category.find();
-    res.status(200).json({
-        con : true,
-        msg : "All Categories",
-        result : category
-    })
-})
-
+app.use("/category", CategoryRoute);
 
 app.use((err, req, res,next) => {
     err.status = err.status || 404;
