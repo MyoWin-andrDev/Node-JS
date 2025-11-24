@@ -14,8 +14,10 @@ app.use(bodyParser.json());
 app.use(fileUpload());
 
 const CategoryRoute = require("./routes/category");
+const SubCategoryRoute = require("./routes/subCategory");
 
 app.use("/category", CategoryRoute);
+app.use("/subCategory", SubCategoryRoute);
 
 app.use((err, req, res,next) => {
     err.status = err.status || 404;
