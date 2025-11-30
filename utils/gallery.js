@@ -1,6 +1,8 @@
 
 const fs = require('fs');
-const CategoryModel = require('../models/category');
+const CategoryModel = require('../models/categoryModel');
+const SubCategoryModel = require('../models/subCategoryModel');
+const ChildCategoryModel = require('../models/childCategoryModel');
 
 let saveFile = (req, res, next) => {
     let fileName = new Date().valueOf() + "_" + req.files.file.name;
@@ -10,6 +12,7 @@ let saveFile = (req, res, next) => {
     console.log(req.body);
     next()
 }
+
 
 let saveFiles = (req, res, next) => {
     let fileArray = []
@@ -23,6 +26,7 @@ let saveFiles = (req, res, next) => {
 
     next()
 }
+
 
 let deleteFile =  async (req, res , next) => {
     const category = await CategoryModel.findById(req.params.id);
@@ -38,6 +42,33 @@ let deleteFile =  async (req, res , next) => {
 
 }
 
+let deleteSubFile =  async (req, res , next) => {
+    const category = await SubCategoryModel.findById(req.params.id);
+    if (!category) {
+        return res.status(404).json({ conn: false, msg: "SubCategory not found" });
+    }
+
+    if (category.image) {
+        await fs.unlinkSync(`./uploads/${category.image}`);
+        console.log(`File ${category.image} deleted successfully`);
+    }
+    next()
+
+}
+
+let deleteChildFile = async (req, res, next) => {
+    const category = await ChildCategoryModel.findById(req.params.id);
+    if (!category) {
+        return res.status(404).json({ conn: false, msg: "ChildCategory not found" });
+    }
+
+    if (category.image) {
+        await fs.unlinkSync(`./uploads/${category.image}`);
+        console.log(`File ${category.image} deleted successfully`);
+    }
+    next()
+}
+
 module.exports = {
-    saveFile, saveFiles, deleteFile
+    saveFile, saveFiles, deleteFile, deleteSubFile, deleteChildFile
 }

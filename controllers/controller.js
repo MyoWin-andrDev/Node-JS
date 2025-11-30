@@ -1,4 +1,4 @@
-const CategoryModel = require("../models/category");
+const CategoryModel = require("../models/categoryModel");
 const FormatMessage = require("../utils/helper");
 const {deleteFile} = require("../utils/gallery");
 

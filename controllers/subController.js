@@ -1,5 +1,5 @@
-const SubCategoryModel = require('../models/subCategory');
-const CategoryModel = require('../models/category');
+const SubCategoryModel = require('../models/subCategoryModel');
+const CategoryModel = require('../models/categoryModel');
 const formatMessage = require('../utils/helper');
 
 let addSubCategory = async (req, res) => {
@@ -11,9 +11,14 @@ let addSubCategory = async (req, res) => {
     formatMessage(res, "Added New SubCategory", updateParent);
 }
 
-let getAllCategory = async (req, res) => {
+let getSingleSubCategory = async (req, res) => {
+    let result = await SubCategoryModel.findById(req.params.id);
+    formatMessage(res, "Single Categories", result);
+}
+
+let getAllSubCategory = async (req, res) => {
     let result = await SubCategoryModel.find()
-    formatMessage(res, "All Categories", result)
+    formatMessage(res, "All SubCategories", result)
 }
 
 let updateSubCategory = async (req, res, next) => {
@@ -24,12 +29,26 @@ let updateSubCategory = async (req, res, next) => {
         formatMessage(res, "Updated SubCategory", updatedSubCategory)
     }
     else{
-        next(new Error("No Category Found !"))
+        next(new Error("No SubCategory Found !"))
+    }
+}
+
+let deleteSubCategory = async (req, res, next) => {
+    let isExist = await SubCategoryModel.findById(req.params.id);
+    if(isExist){
+        await CategoryModel.findByIdAndUpdate(isExist.categoryId , {$pull : {subCategory : isExist._id}});
+        await SubCategoryModel.findByIdAndDelete(isExist._id)
+        formatMessage(res, "Deleted SubCategory", isExist);
+    }
+    else{
+        next(new Error("No SubCategory Found !"))
     }
 }
 
 module.exports = {
-    getAllCategory,
+    getAllSubCategory,
+    getSingleSubCategory,
     addSubCategory,
-    updateSubCategory
+    updateSubCategory,
+    deleteSubCategory
 }

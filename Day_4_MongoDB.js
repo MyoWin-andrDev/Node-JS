@@ -9,15 +9,18 @@ const mongoose = require('mongoose');
 const {saveFile} = require("./utils/gallery");
 //Usage
 mongoose.connect(process.env.MONGO_URL + process.env.DB_NAME);
+app.use(fileUpload());
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(fileUpload());
+
 
 const CategoryRoute = require("./routes/category");
 const SubCategoryRoute = require("./routes/subCategory");
+const childCategoryRoute = require("./routes/childCategory");
 
 app.use("/category", CategoryRoute);
 app.use("/subCategory", SubCategoryRoute);
+app.use("/childCategory", childCategoryRoute)
 
 app.use((err, req, res,next) => {
     err.status = err.status || 404;
