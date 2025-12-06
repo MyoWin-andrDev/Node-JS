@@ -17,7 +17,7 @@ let getSingleSubCategory = async (req, res) => {
 }
 
 let getAllSubCategory = async (req, res) => {
-    let result = await SubCategoryModel.find()
+    let result = await SubCategoryModel.find().populate('childCategory').select('-__v -createdAt');
     formatMessage(res, "All SubCategories", result)
 }
 

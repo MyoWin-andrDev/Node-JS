@@ -1,9 +1,20 @@
 const CategoryModel = require("../models/categoryModel");
+const SubCategoryModel = require("../models/subCategoryModel");
+const ChildCategoryModel = require("../models/childCategoryModel");
 const FormatMessage = require("../utils/helper");
 const {deleteFile} = require("../utils/gallery");
 
 let getAllItem = async (req, res) => {
-    let result = await CategoryModel.find()
+    let result = await CategoryModel.find().populate(
+        {
+            path : 'subCategory',
+            model : SubCategoryModel,
+            populate : {
+                path : 'childCategory',
+                model : ChildCategoryModel
+            }
+        }
+    )
     FormatMessage(res, "All Categories", result)
 }
 

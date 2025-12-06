@@ -17,10 +17,12 @@ app.use(bodyParser.json());
 const CategoryRoute = require("./routes/category");
 const SubCategoryRoute = require("./routes/subCategory");
 const childCategoryRoute = require("./routes/childCategory");
+const tagRouter = require("./routes/tagRoute");
 
 app.use("/category", CategoryRoute);
 app.use("/subCategory", SubCategoryRoute);
 app.use("/childCategory", childCategoryRoute)
+app.use("/tag", tagRouter);
 
 app.use((err, req, res,next) => {
     err.status = err.status || 404;
