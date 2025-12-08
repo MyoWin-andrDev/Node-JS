@@ -19,6 +19,11 @@ module.exports = {
             image : joi.string().required(),
         })
     },
+    PermissionSchema : {
+        add : Joi.object({
+            name : Joi.string().min(3).required(),
+        })
+    },
     AllSchema : {
         id : joi.object({
             id : Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
