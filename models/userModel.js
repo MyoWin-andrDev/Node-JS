@@ -3,9 +3,11 @@ const {mongo} = require("mongoose");
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-    name : {type : String, unique : true , required: true},
+    name : {type : String, required: true},
     phone : {type : String, unique : true, required: true},
-    email : {type : String, required: true},
+    password : {type : String, required: true},
+    role : {type : Schema.Types.ObjectId, ref : "role"},
+    permissions : {type : Schema.Types.ObjectId, ref : "permissions"},
     createdAt : {type : Date, default: Date.now},
 })
 
