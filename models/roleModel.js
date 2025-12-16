@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const roleSchema = new Schema({
-    name: {type : String, required: true},
+    name: {type : String, required: true, unique : true },
     permissions : {type : Schema.Types.ObjectId, ref : 'permissions'},
     createdAt : {type : Date , default : Date.now},
 })

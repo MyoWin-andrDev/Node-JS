@@ -19,12 +19,14 @@ const SubCategoryRoute = require("./routes/subCategory");
 const childCategoryRoute = require("./routes/childCategory");
 const tagRouter = require("./routes/tagRoute");
 const permissionRouter = require("./routes/permissionRoute");
+const roleRouter = require("./routes/roleRoute");
 
 app.use("/category", CategoryRoute);
 app.use("/subCategory", SubCategoryRoute);
 app.use("/childCategory", childCategoryRoute)
 app.use("/tag", tagRouter);
 app.use("/permissions", permissionRouter);
+app.use('/role', roleRouter);
 
 app.use((err, req, res,next) => {
     err.status = err.status || 404;

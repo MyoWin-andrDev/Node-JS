@@ -22,6 +22,17 @@ module.exports = {
     PermissionSchema : {
         add : Joi.object({
             name : Joi.string().min(3).required(),
+        }),
+        update : Joi.object({
+            name : Joi.string().min(3).required(),
+        })
+    },
+    RoleSchema : {
+        add : Joi.object({
+            name : Joi.string().min(3).required(),
+        }),
+        update : Joi.object({
+            name : Joi.string().min(3).required(),
         })
     },
     AllSchema : {
