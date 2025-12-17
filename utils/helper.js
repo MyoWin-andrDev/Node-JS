@@ -13,7 +13,7 @@ module.exports = {
     formatMessage,
     encode : (payload) => bcrypt.hashSync(payload , 10),
     comparePassword : (password , hashString) => bcrypt.compare(password , hashString),
-    getToken : () => jwt.sign({
+    getToken : (payload) => jwt.sign({
         exp: Math.floor(Date.now() / 1000) + (60 * 60),
         data: 'foobar'
     }, process.env.SECRET_KEY),

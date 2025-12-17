@@ -20,6 +20,11 @@ module.exports = {
                 next()
             }
         }
+    },
+    validateToken : () => {
+        return (req, res, next) => {
+            console.log(req.headers.authorization);
+        }
     }
 
 }

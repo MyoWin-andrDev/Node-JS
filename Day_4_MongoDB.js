@@ -22,7 +22,9 @@ const permissionRouter = require("./routes/permissionRoute");
 const roleRouter = require("./routes/roleRoute");
 const userRouter = require("./routes/userRoute");
 
-app.use("/category", CategoryRoute);
+let { validateToken } = require('./utils/validator')
+
+app.use("/category", validateToken() ,  CategoryRoute);
 app.use("/subCategory", SubCategoryRoute);
 app.use("/childCategory", childCategoryRoute)
 app.use("/tag", tagRouter);
