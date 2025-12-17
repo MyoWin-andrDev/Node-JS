@@ -35,6 +35,17 @@ module.exports = {
             name : Joi.string().min(3).required(),
         })
     },
+    UserSchema : {
+        register : Joi.object({
+            name : Joi.string().min(3).required(),
+            phone : Joi.string().min(8).required(),
+            password : Joi.string().min(6).required()
+        }),
+        login : Joi.object({
+            phone : Joi.string().min(8).required(),
+            password : Joi.string().required()
+        })
+    },
     AllSchema : {
         id : joi.object({
             id : Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
