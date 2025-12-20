@@ -30,7 +30,7 @@ app.use("/childCategory", childCategoryRoute)
 app.use("/tag", tagRouter);
 app.use("/permissions", permissionRouter);
 app.use('/role', roleRouter);
-app.use('/user', userRouter)
+app.use('/user', validateToken(), userRouter)
 
 app.use((err, req, res,next) => {
     err.status = err.status || 404;

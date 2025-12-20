@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 module.exports = {
     validateBody : schema => {
         return (req, res, next) => {
@@ -23,7 +24,14 @@ module.exports = {
     },
     validateToken : () => {
         return (req, res, next) => {
-            console.log(req.headers.authorization);
+            if(req.headers.authorization){
+                let token = req.headers.authorization.split(' ')[1];
+                req.body.user = jwt.verify(token, process.env.SECRET_KEY).data
+                next()
+            }
+            else{
+                next(new Error("No Token Found !!!"))
+            }
         }
     }
 

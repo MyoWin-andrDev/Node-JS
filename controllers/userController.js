@@ -26,7 +26,15 @@ let loginUser = async (req, res, next) => {
     }
 
 }
+
+let addRoleToUser = async (req, res, next) => {
+    let result = await UserModel.findByIdAndUpdate(req.body.userId, {$push : {role : req.body.roleId}})
+    let updatedUser = await UserModel.findById(req.body.userId)
+    formatMessage(res, "Role Successfully Added", updatedUser)
+}
+
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    addRoleToUser
 }

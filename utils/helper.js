@@ -15,6 +15,6 @@ module.exports = {
     comparePassword : (password , hashString) => bcrypt.compare(password , hashString),
     getToken : (payload) => jwt.sign({
         exp: Math.floor(Date.now() / 1000) + (60 * 60),
-        data: 'foobar'
+        data: payload
     }, process.env.SECRET_KEY),
 }
