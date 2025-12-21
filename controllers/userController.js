@@ -2,9 +2,15 @@ const UserModel = require('../models/userModel');
 const {formatMessage, encode , comparePassword, getToken} = require('../utils/helper');
 
 let registerUser = async (req, res) => {
-    req.body.password = encode(req.body.password);
-    let saveUser = await new UserModel(req.body).save();
-    formatMessage(res, "Register Successful", saveUser);
+    let isPhoneExist = await UserModel.findOne({phone : req.body.phone})
+    if(!isPhoneExist){
+        req.body.password = encode(req.body.password);
+        let saveUser = await new UserModel(req.body).save();
+        formatMessage(res, "Register Successful", saveUser);
+    }
+    else{
+        formatMessage(res, "Already Registered with that phone number")
+    }
 }
 
 let loginUser = async (req, res, next) => {
@@ -28,13 +34,39 @@ let loginUser = async (req, res, next) => {
 }
 
 let addRoleToUser = async (req, res, next) => {
-    let result = await UserModel.findByIdAndUpdate(req.body.userId, {$push : {role : req.body.roleId}})
-    let updatedUser = await UserModel.findById(req.body.userId)
-    formatMessage(res, "Role Successfully Added", updatedUser)
+    let user = await UserModel.findById(req.body.userId);
+    let isRoleExist = user.role.find(id => id.equals(req.body.roleId));
+
+    if(!isRoleExist){
+        await UserModel.findByIdAndUpdate(req.body.userId, {$push : {role : req.body.roleId}})
+        let updatedUser = await UserModel.findById(req.body.userId)
+        formatMessage(res, "Role Successfully Added", updatedUser)
+    }
+    else{
+        formatMessage(res, "Role Already Exist", user)
+    }
+}
+
+let removeRoleFromUser = async(req, res, next) => {
+    let isUserExist = await UserModel.findById(req.body.userId);
+    if(isUserExist){
+        let isRoleExist = isUserExist.role.find(it.equals(req.body.roleId))
+        if(isRoleExist){
+            await UserModel.findByIdAndUpdate(req.body.userId, {$pull : {role : req.body.roleId}})
+            formatMessage(res, "Role Successfully Removed", isRoleExist)
+        }
+        else{
+            formatMessage(res, "role is not existed in that user", isUserExist);
+        }
+    }
+    else{
+        formatMessage(res, "No user exists with that id", isUserExist);
+    }
 }
 
 module.exports = {
     registerUser,
     loginUser,
-    addRoleToUser
+    addRoleToUser,
+    removeRoleFromUser
 }

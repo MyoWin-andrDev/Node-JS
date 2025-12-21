@@ -9,5 +9,6 @@ router.post('/login', [validateBody(UserSchema.login), UserController.loginUser]
 
 //Setting Permission
 router.post('/add/role',  UserController.addRoleToUser)
+router.patch('remove/role', UserController.removeRoleFromUser)
 
 module.exports = router;

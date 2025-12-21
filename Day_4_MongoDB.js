@@ -21,6 +21,7 @@ const tagRouter = require("./routes/tagRoute");
 const permissionRouter = require("./routes/permissionRoute");
 const roleRouter = require("./routes/roleRoute");
 const userRouter = require("./routes/userRoute");
+const authApi = require("./routes/apiRoute")
 
 let { validateToken } = require('./utils/validator')
 
@@ -31,6 +32,7 @@ app.use("/tag", tagRouter);
 app.use("/permissions", permissionRouter);
 app.use('/role', roleRouter);
 app.use('/user', validateToken(), userRouter)
+app.use('/api', authApi)
 
 app.use((err, req, res,next) => {
     err.status = err.status || 404;
