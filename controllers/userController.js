@@ -14,7 +14,7 @@ let registerUser = async (req, res) => {
 }
 
 let loginUser = async (req, res, next) => {
-    let isUserExist = await UserModel.findOne({phone : req.body.phone});
+    let isUserExist = await UserModel.findOne({phone : req.body.phone}).populate('role permissions');
     if(isUserExist){
         if(await comparePassword(req.body.password, isUserExist.password)){
             let userObj = isUserExist.toObject()
@@ -50,13 +50,47 @@ let addRoleToUser = async (req, res, next) => {
 let removeRoleFromUser = async(req, res, next) => {
     let isUserExist = await UserModel.findById(req.body.userId);
     if(isUserExist){
-        let isRoleExist = isUserExist.role.find(it.equals(req.body.roleId))
+        let isRoleExist = isUserExist.role.find(rid => rid.equals(req.body.roleId))
         if(isRoleExist){
             await UserModel.findByIdAndUpdate(req.body.userId, {$pull : {role : req.body.roleId}})
             formatMessage(res, "Role Successfully Removed", isRoleExist)
         }
         else{
-            formatMessage(res, "role is not existed in that user", isUserExist);
+            formatMessage(res, "role is not existed in that user", isRoleExist);
+        }
+    }
+    else{
+        formatMessage(res, "No user exists with that id", isUserExist);
+    }
+}
+
+let addPermissionToUser = async (req, res, next) => {
+    let isUserExist = await UserModel.findById(req.body.userId);
+    if(isUserExist){
+        let isPermissionExist = isUserExist.permissions.find(pId => pId.equals(req.body.permitId))
+        if(!isPermissionExist){
+            await UserModel.findByIdAndUpdate(req.body.userId, {$push : {permissions : req.body.permitId}})
+            formatMessage(res, "Permission Successfully Given", isPermissionExist);
+        }
+        else{
+            formatMessage(res, "Permission is already granted", isPermissionExist);
+        }
+    }
+    else{
+        formatMessage(res, "No user exists with that id", isUserExist);
+    }
+}
+
+let removePermissionFromUser = async(req, res, next) => {
+    let isUserExist = await UserModel.findById(req.body.userId);
+    if(isUserExist){
+        let isPermissionExist = isUserExist.permissions.find(pid => pid.equals(req.body.permitId))
+        if(isPermissionExist){
+            await UserModel.findByIdAndUpdate(req.body.userId, {$pull : {permissions : req.body.permitId}})
+            formatMessage(res, "Permission Successfully Removed", isPermissionExist)
+        }
+        else{
+            formatMessage(res, "Permission is not granted in that user", isPermissionExist);
         }
     }
     else{
@@ -68,5 +102,7 @@ module.exports = {
     registerUser,
     loginUser,
     addRoleToUser,
-    removeRoleFromUser
+    removeRoleFromUser,
+    addPermissionToUser,
+    removePermissionFromUser
 }

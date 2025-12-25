@@ -1,5 +1,5 @@
 const PermissionModel = require('../models/permissionModel');
-const formatMessage = require('../utils/helper');
+const {formatMessage} = require('../utils/helper');
 
 let add = async (req, res, next) => {
     let isPermitted = await PermissionModel.findOne({name : req.body.name})

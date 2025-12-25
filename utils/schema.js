@@ -54,11 +54,34 @@ module.exports = {
         addRoleToUser : joi.object({
             userId : objectId,
             roleId : objectId
+        }),
+        addPermissionToUser : joi.object({
+            userId : objectId,
+            permitId : objectId
+        })
+    },
+    ProductSchema : {
+        addProduct : joi.object({
+            'name' : joi.string().required(),
+            'price' : joi.number().required(),
+            'brand' : joi.string().required(),
+            'category' : objectId,
+            'subCategory' : objectId,
+            'childCategory' : objectId,
+            'tag' : objectId,
+            'refund' : joi.string().required(),
+            'feature' : joi.object(),
+            'color' : joi.array(),
+            'image' : joi.array(),
+            user : joi.optional()
         })
     },
     AllSchema : {
         id : joi.object({
             id : objectId
+        }),
+        page : joi.object({
+            page : joi.number().min(1).required()
         })
     }
 }

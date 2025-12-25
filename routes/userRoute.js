@@ -7,8 +7,12 @@ let { UserSchema } = require('../utils/schema');
 router.post('/register', [validateBody(UserSchema.register), UserController.registerUser])
 router.post('/login', [validateBody(UserSchema.login), UserController.loginUser])
 
+//Setting Role
+router.post('/add/role',  [ validateBody(UserSchema.addRoleToUser),UserController.addRoleToUser])
+router.post('/remove/role', [validateBody(UserSchema.addRoleToUser),UserController.removeRoleFromUser])
+
 //Setting Permission
-router.post('/add/role',  UserController.addRoleToUser)
-router.patch('remove/role', UserController.removeRoleFromUser)
+router.post('/add/permission',[validateBody(UserSchema.addPermissionToUser),UserController.addPermissionToUser])
+router.post('/remove/permission', [validateBody(UserSchema.addPermissionToUser), UserController.removePermissionFromUser])
 
 module.exports = router;
