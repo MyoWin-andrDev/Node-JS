@@ -98,11 +98,23 @@ let removePermissionFromUser = async(req, res, next) => {
     }
 }
 
+let passwordReset = async (req, res, next) => {
+    let user = await UserModel.findById(req.body.user._id)
+    if(await comparePassword(req.body.oldPassword, user.password)){
+        await UserModel.findByIdAndUpdate(user._id, {password : encode(req.body.newPassword)})
+        formatMessage(res, "Password Successfully Changed", user)
+    }
+    else{
+        next(new Error('Wrong Password'))
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
     addRoleToUser,
     removeRoleFromUser,
     addPermissionToUser,
-    removePermissionFromUser
+    removePermissionFromUser,
+    passwordReset
 }

@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const {decode} = require("jsonwebtoken");
 module.exports = {
     validateBody : schema => {
         return (req, res, next) => {
@@ -26,7 +27,8 @@ module.exports = {
         return (req, res, next) => {
             if(req.headers.authorization){
                 let token = req.headers.authorization.split(' ')[1];
-                req.body.user = jwt.verify(token, process.env.SECRET_KEY).data
+                const decoded = jwt.verify(token, process.env.SECRET_KEY);
+                req.body.user = decoded.data;
                 next()
             }
             else{
