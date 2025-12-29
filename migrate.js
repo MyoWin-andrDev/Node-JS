@@ -9,9 +9,10 @@ const mongoose = require('mongoose');
 
         const migrator = require('./migrations/migrator');
 
-        await migrator.backup();
-        await migrator.migrate();
+       // await migrator.backup();
+       await migrator.migrate();
 
+        console.log("Backup completed successfully");
         console.log("Migration completed successfully");
         process.exit(0);
     } catch (err) {

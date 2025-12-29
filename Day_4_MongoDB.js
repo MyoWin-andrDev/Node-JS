@@ -7,6 +7,15 @@ const mongoose = require('mongoose');
     app = express();
     fileUpload = require('express-fileupload');
 const {saveFile} = require("./utils/gallery");
+const { getTokenFromSocket, getToken} = require('./utils/helper')
+
+//Socket IO Setup
+const { createServer } = require("node:http");
+const server = createServer(app);
+//IO Integrating
+const { Server } = require("socket.io");
+const io = new Server(server);
+
 //Usage
 mongoose.connect(process.env.MONGO_URL + process.env.DB_NAME);
 app.use(fileUpload());
@@ -36,6 +45,9 @@ app.use('/user', validateToken(), userRouter);
 app.use('/api', authApi)
 app.use('/product', validateToken(), productRouter);
 
+let  generator = require("./migrations/generate")
+//generator.generateOwner()
+
 
 app.use((err, req, res,next) => {
     err.status = err.status || 404;
@@ -46,7 +58,26 @@ app.use((req, res) => {
     res.status(404).send({ con: false, msg: "Not Route Found" });
 })
 
+// Socket events
+// io.on("connection", (socket) => {
+//     console.log('Socket Connected', socket.id)
+//     socket.emit("Greet", "Hello")
+//
+//     socket.on("info", (data) => {
+//         console.log("Data" , data)
+//     })
+//
+//     socket.emit ('myInfo', {name : "Ezzie", age : 27})
+//
+// })
 
-app.listen(process.env.PORT, () => {
+//Chat Socket
+io.of('/chat').use( async(socket, next) => {
+    await getTokenFromSocket(socket, next)
+}).on("connection", socket => {
+    socket.emit('Greet', "Hello Ezzie !!!")
+})
+
+server.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
 })
