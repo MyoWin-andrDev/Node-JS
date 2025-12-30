@@ -9,25 +9,29 @@ let formatMessage = (res, msg , result) => {
     })
 }
 
-let getTokenFromSocket = async (socket, next) => {
-    let token = socket.handshake.query.token
-    if(token){
-        let user = jwt.verify(token, process.env.SECRET_KEY)
-        console.log(user)
-        next()
+const getTokenFromSocket = (socket, next) => {
+    const token = socket.handshake.query.token;
+
+    if (!token) {
+        return next(new Error("No token provided"));
     }
-    else{
-        next(new Error("No Token Found In Handshake !!!"))
+
+    try {
+        const user = jwt.verify(token, process.env.SECRET_KEY);
+        socket.userData = user;
+        next();
+    } catch (err) {
+        next(new Error("Invalid or expired token"));
     }
-}
+};
 
 module.exports = {
-    formatMessage,
     encode : (payload) => bcrypt.hashSync(payload , 10),
     comparePassword : (password , hashString) => bcrypt.compare(password , hashString),
     getToken : (payload) => jwt.sign({
         exp: Math.floor(Date.now() / 1000) + (60 * 60),
         data: payload
     }, process.env.SECRET_KEY),
-    getTokenFromSocket
+    getTokenFromSocket,
+    formatMessage,
 }

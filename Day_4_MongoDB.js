@@ -34,6 +34,7 @@ const authApi = require("./routes/apiRoute")
 const productRouter = require('./routes/productRoute')
 
 let { validateToken } = require('./utils/validator')
+let { liveUser , initialize } = require('./utils/chat')
 
 app.use("/category" , validateToken(), CategoryRoute);
 app.use("/subCategory", validateToken() ,SubCategoryRoute);
@@ -72,11 +73,18 @@ app.use((req, res) => {
 // })
 
 //Chat Socket
-io.of('/chat').use( async(socket, next) => {
-    await getTokenFromSocket(socket, next)
-}).on("connection", socket => {
-    socket.emit('Greet', "Hello Ezzie !!!")
-})
+
+io.of('/chat')
+    .use((socket, next) => {
+        getTokenFromSocket(socket, next);
+    })
+    .on("connection", (socket) => {
+        initialize(io, socket);
+
+        socket.on("disconnect", () => {
+            console.log("Disconnected:", socket.id);
+        });
+    });
 
 server.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
